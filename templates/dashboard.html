@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h2>Dashboard</h2>
+  <p>Dit is de eerste klikbare live basis. Vanaf hier bouwen we GROBÉ OS verder uit.</p>
+</section>
+<div class="grid">
+  {% for category, rows in categories.items() %}
+  <section class="card">
+    <h3>{{ category }}</h3>
+    {% for item in rows %}
+      <div class="row">
+        <div>
+          <strong>{{ item.name }}</strong><br>
+          <small>{{ item.code }}</small>
+        </div>
+        <div class="right">
+          <span class="qty">{{ item.quantity|round(2) }} {{ item.unit }}</span><br>
+          <span class="badge {{ item.status.class }}">{{ item.status.label }}</span>
+        </div>
+      </div>
+    {% endfor %}
+  </section>
+  {% endfor %}
+  <section class="card">
+    <h3>Laatste mutaties</h3>
+    {% if movements %}
+      {% for m in movements %}
+      <div class="row"><div>{{ m.item_code }}<br><small>{{ m.source }}</small></div><div class="right">{{ m.change }}</div></div>
+      {% endfor %}
+    {% else %}
+      <p>Nog geen mutaties.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

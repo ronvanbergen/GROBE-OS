@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero"><h2>Voorraadmutatie</h2><p>Handmatig voorraad verhogen of verlagen.</p></section>
+<section class="card full">
+<form method="post">
+  <label>Artikel</label>
+  <select name="item_code">
+    {% for item in items %}<option value="{{ item.code }}">{{ item.name }} - {{ item.code }}</option>{% endfor %}
+  </select>
+  <label>Mutatie</label>
+  <input name="change" type="number" step="0.01" placeholder="bijv. 100 of -4">
+  <label>Bron</label>
+  <input name="source" value="Handmatig">
+  <label>Referentie</label>
+  <input name="reference" placeholder="bijv. factuur, pakbon of opmerking">
+  <button type="submit">Opslaan</button>
+</form>
+</section>
+{% endblock %}

@@ -4,19 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>GROBÉ OS</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <header>
   <div>
-    <div class="brand">GROBÉ OS</div>
-    <div class="sub">Render basis · v1.0</div>
+    <h1>GROBÉ OS</h1>
+    <p>Live basis op Render</p>
   </div>
   <nav>
-    <a href="/">Dashboard</a>
-    <a href="/import">Import</a>
-    <a href="/mutaties">Mutaties</a>
-    <a href="/health">Health</a>
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('voorraad') }}">Voorraad</a>
+    <a href="{{ url_for('mutatie') }}">Mutatie</a>
+    <a href="{{ url_for('import_page') }}">Import</a>
+    <a href="{{ url_for('health') }}">Health</a>
   </nav>
 </header>
 <main>

@@ -1,8 +1,15 @@
-# GROBÉ OS - Render project v1
+# GROBÉ OS Render fix v1.1
 
-Werkende basis voor Render zonder FastAPI/Pydantic.
+Deze versie lost de Render-templatefout op en maakt de eerste klikbare basis:
 
-## Render instellingen
+- Dashboard
+- Voorraad
+- Mutatie
+- Import-test
+- Health-check
+- SQLite database
+
+Render instellingen:
 
 Build Command:
 
@@ -15,15 +22,3 @@ Start Command:
 ```text
 gunicorn main:app --bind 0.0.0.0:$PORT
 ```
-
-## Pagina's
-
-- `/` dashboard
-- `/health` health-check
-- `/api/dashboard` JSON dashboard
-- `/import` importpagina
-- `/mutaties` voorraadmutaties
-
-## Status
-
-Dit is een stabiele startbasis. Daniel/Michael-parsers en factuurherkenning zijn nog niet ingebouwd.
