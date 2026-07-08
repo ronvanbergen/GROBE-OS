@@ -1,6 +1,6 @@
-# GROBÉ OS - Render basis v1.0
+# GROBÉ OS - Render project v1
 
-Deze versie is bewust gebouwd zonder FastAPI/Pydantic, omdat Render op Python 3.14 vastliep bij pydantic-core.
+Werkende basis voor Render zonder FastAPI/Pydantic.
 
 ## Render instellingen
 
@@ -16,22 +16,14 @@ Start Command:
 gunicorn main:app --bind 0.0.0.0:$PORT
 ```
 
-## Wat werkt
+## Pagina's
 
-- Homepage/dashboard
-- SQLite database wordt automatisch aangemaakt
-- Voorraaditems met statuskleur
-- Importpagina ontvangt bestanden en logt uploads
-- Mutatiepagina
-- `/health` endpoint
+- `/` dashboard
+- `/health` health-check
+- `/api/dashboard` JSON dashboard
+- `/import` importpagina
+- `/mutaties` voorraadmutaties
 
-## Wat nog niet werkt
+## Status
 
-- Daniel/Michael inhoudelijk uitlezen
-- Factuur-engine
-- Prijshistorie
-- Login
-- Dropbox
-- PDF-generatie
-
-Deze versie is bedoeld als eerste stabiele live basis op Render.
+Dit is een stabiele startbasis. Daniel/Michael-parsers en factuurherkenning zijn nog niet ingebouwd.

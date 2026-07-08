@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Importcentrum</h1>
+{% if message %}<div class="message">{{ message }}</div>{% endif %}
+<section class="card">
+  <h2>Bestand uploaden</h2>
+  <form method="post" enctype="multipart/form-data">
+    <label>Bron</label>
+    <select name="source">
+      <option>Daniel</option>
+      <option>Michael</option>
+      <option>Factuur leverancier</option>
+      <option>Overig</option>
+    </select>
+    <label>Bestand</label>
+    <input type="file" name="file">
+    <button type="submit">Uploaden</button>
+  </form>
+  <p class="sub">Deze versie registreert uploads. De inhoudelijke parser wordt hierna ingebouwd.</p>
+</section>
+<section class="card">
+  <h2>Laatste imports</h2>
+  {% for i in dashboard.imports %}
+    <div class="row"><strong>{{ i.source }}</strong> · {{ i.filename }} · {{ i.status }}<br><small>{{ i.message }}</small></div>
+  {% else %}
+    <p class="sub">Nog geen imports.</p>
+  {% endfor %}
+</section>
+{% endblock %}

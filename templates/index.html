@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="grid">
+  <section class="card wide">
+    <h2>Voorraad</h2>
+    <table>
+      <thead><tr><th>Artikel</th><th>Type</th><th>Voorraad</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for item in dashboard.items %}
+        <tr>
+          <td><span class="dot" style="background:{{ item.status.color }}"></span><strong>{{ item.name }}</strong><br><small>{{ item.code }}</small></td>
+          <td>{{ item.category }}</td>
+          <td>{{ "%.0f"|format(item.quantity) if item.quantity == item.quantity|round else item.quantity }} {{ item.unit }}</td>
+          <td>{{ item.status.label }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  <section class="card">
+    <h2>Financieel</h2>
+    <p>Open debiteuren: <span class="pill">{{ dashboard.finance.debtors }}</span></p>
+    <p>Omzet maand: <span class="pill">{{ dashboard.finance.revenue_month }}</span></p>
+    <h2>Status</h2>
+    <p><span class="dot blue"></span>Ruim voldoende</p>
+    <p><span class="dot light"></span>Voldoende</p>
+    <p><span class="dot orange"></span>Bestellen</p>
+    <p><span class="dot red"></span>Bijna op</p>
+  </section>
+  <section class="card wide">
+    <h2>Laatste mutaties</h2>
+    {% if dashboard.movements %}
+      {% for m in dashboard.movements %}
+        <div class="row"><strong>{{ m.item_code }}</strong> {{ m.change }} · {{ m.source }} · {{ m.created_at }}</div>
+      {% endfor %}
+    {% else %}
+      <p class="sub">Nog geen mutaties.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

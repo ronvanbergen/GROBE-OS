@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Voorraadmutaties</h1>
+{% if message %}<div class="message">{{ message }}</div>{% endif %}
+<section class="card">
+  <h2>Handmatige mutatie</h2>
+  <form method="post">
+    <label>Artikel</label>
+    <select name="item_code">
+      {% for item in dashboard.items %}
+        <option value="{{ item.code }}">{{ item.code }} - {{ item.name }}</option>
+      {% endfor %}
+    </select>
+    <label>Mutatie (+ erbij, - eraf)</label>
+    <input name="change" placeholder="bijv. 100 of -20">
+    <label>Bron</label>
+    <input name="source" value="Handmatig">
+    <label>Referentie</label>
+    <input name="reference" placeholder="bijv. factuur, pakbon, productie">
+    <label>Opmerking</label>
+    <input name="note">
+    <button type="submit">Opslaan</button>
+  </form>
+</section>
+<section class="card">
+  <h2>Laatste mutaties</h2>
+  {% for m in dashboard.movements %}
+    <div class="row"><strong>{{ m.item_code }}</strong> {{ m.change }} · {{ m.source }} · {{ m.reference or '' }}</div>
+  {% else %}
+    <p class="sub">Nog geen mutaties.</p>
+  {% endfor %}
+</section>
+{% endblock %}
