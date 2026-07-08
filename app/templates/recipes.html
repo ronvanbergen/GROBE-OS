@@ -1,22 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Recepturen</h1>
-{% for row in rows %}
-<section class="card">
-  <h2>{{ row.recipe.name }}</h2>
-  <p>{{ row.recipe.notes }}</p>
-  <div class="grid four">
-    <div class="metric"><span>Batch</span><strong>{{ row.recipe.batch_liters }} L</strong></div>
-    <div class="metric"><span>Kostprijs batch</span><strong>{{ row.cost.total_cost|money }}</strong></div>
-    <div class="metric"><span>Kostprijs liter</span><strong>{{ row.cost.cost_per_liter|money }}</strong></div>
-    <div class="metric"><span>Mogelijk</span><strong>{{ "{:,.0f}".format(row.cost.possible_liters).replace(',', '.') }} L</strong></div>
+<section class="hero">
+  <div>
+    <h1>Recepturen</h1>
+    <p>Huidige Universol-receptuur en nieuwe receptuur na ECOSURF. Batchkosten en kostprijs per liter worden automatisch berekend.</p>
   </div>
-  <table>
-    <tr><th>Grondstof</th><th>Hoeveelheid</th><th>Prijs</th><th>Kosten</th><th>Voorraad</th><th>Batches mogelijk</th></tr>
-    {% for line in row.cost.lines %}
-    <tr><td>{{ line.name }}</td><td>{{ line.quantity }} {{ line.unit }}</td><td>{{ line.unit_price|money }}</td><td>{{ line.line_total|money }}</td><td>{{ line.stock }}</td><td>{{ line.possible_batches }}</td></tr>
-    {% endfor %}
-  </table>
+  <div class="hero-card"><span>Aantal recepturen</span><strong>{{ rows|length }}</strong></div>
 </section>
+
+<div class="grid two">
+{% for row in rows %}
+  <section class="card">
+    <h2>{{ row.recipe.name }}</h2>
+    <p class="muted">{{ row.recipe.notes }}</p>
+    <div class="grid three">
+      <div class="metric"><span>Batch</span><strong>{{ row.recipe.batch_liters }} L</strong></div>
+      <div class="metric"><span>Batchkostprijs</span><strong>{{ row.cost.batch_cost|money }}</strong></div>
+      <div class="metric"><span>Kostprijs/liter</span><strong>{{ row.cost.cost_per_liter|money }}</strong></div>
+    </div>
+    <h3>Grondstoffen</h3>
+    <table>
+      <tr><th>Code</th><th>Grondstof</th><th>Hoeveelheid</th><th>Prijs</th><th>Kosten</th></tr>
+      {% for line in row.cost.lines %}
+      <tr>
+        <td>{{ line.legacy_number }}</td>
+        <td>{{ line.name }}</td>
+        <td>{{ line.quantity }} {{ line.unit }}</td>
+        <td>{{ line.unit_price|money }}</td>
+        <td>{{ line.line_cost|money }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </section>
 {% endfor %}
+</div>
 {% endblock %}

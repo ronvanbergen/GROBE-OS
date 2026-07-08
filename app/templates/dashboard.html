@@ -1,65 +1,91 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="hero">
-  <div>
-    <h1>Controlekamer GROBÉ Nederland</h1>
-    <p>Voorraad, recepturen, kostprijzen en open mutaties in één overzicht.</p>
+<section class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-icon">€</div>
+    <div><span>OMZET DEZE MAAND</span><strong>€ 61.245</strong><small class="green">+12,4% vs vorige maand</small></div>
+    <div class="spark">▁▃▅▂▄▃▆</div>
   </div>
-  <div class="hero-card">
-    <span>Open mutaties</span>
-    <strong>{{ metrics.open_mutations|length }}</strong>
+  <div class="kpi-card">
+    <div class="kpi-icon people">☷</div>
+    <div><span>OPENSTAANDE DEBITEUREN</span><strong>€ 84.230</strong><small class="orange">12 facturen</small></div>
+    <div class="spark">▁▂▄▅▃▃▆</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon">▣</div>
+    <div><span>OPEN ORDERS</span><strong>12</strong><small class="orange">3 wachten op voorraad</small></div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon">🚚</div>
+    <div><span>PAKBONNEN VANDAAG</span><strong>5</strong><small class="green">Laatste: 2026-0451</small></div>
   </div>
 </section>
 
-<div class="grid four">
-  {% for recipe in metrics.recipes %}
-  <div class="card metric">
-    <span>{{ recipe.recipe_name }}</span>
-    <strong>{{ "{:,.0f}".format(recipe.possible_liters).replace(',', '.') }} L</strong>
-    <small>mogelijk, beperkend: {{ recipe.limiting_material }}</small>
+<section class="main-grid">
+  <div class="panel stock-panel">
+    <div class="panel-title">GEREED PRODUCT VOORRAAD</div>
+    {% for row in metrics.dashboard_products %}
+    <div class="stock-row">
+      <div class="product-thumb {{ row.css }}">{{ row.icon }}</div>
+      <div class="stock-info"><strong>{{ row.name }}</strong><span>{{ row.stock }}</span></div>
+      <span class="status {{ row.status_class }}">{{ row.status }}</span>
+    </div>
+    {% endfor %}
+    <a class="view-link" href="{{ url_for('products') }}">Alle producten bekijken →</a>
   </div>
-  {% endfor %}
-  <div class="card metric">
-    <span>Producten</span><strong>{{ metrics.products|length }}</strong><small>met kostprijsberekening</small>
-  </div>
-  <div class="card metric">
-    <span>Waarschuwingen</span><strong>{{ metrics.warnings|length }}</strong><small>voorraad en capaciteit</small>
-  </div>
-</div>
 
-<h2>Grondstoffen IBC-overzicht</h2>
-<div class="tank-grid">
-  {% for article in metrics.raw_materials %}
-  {% set pct = (article.stock / article.max_stock * 100) if article.max_stock else 0 %}
-  {% set pct = 100 if pct > 100 else pct %}
-  <div class="tank-card">
-    <div class="tank"><div class="tank-fill" style="height: {{ pct }}%"></div></div>
-    <div class="tank-info">
-      <strong>{{ article.name }}</strong>
-      <span>{{ article.stock }} {{ article.unit }}</span>
-      <small>min. {{ article.min_stock }} | levertijd {{ article.lead_time_days }} dagen</small>
+  <div class="panel tank-panel">
+    <div class="panel-title">TANKEN</div>
+    {% for tank in metrics.dashboard_tanks %}
+    <div class="tank-row">
+      <div class="mini-tank"><div style="height: {{ tank.percent }}%"></div></div>
+      <div class="tank-text"><strong>{{ tank.name }}</strong><div class="bar"><span style="width: {{ tank.percent }}%"></span></div><small>Capaciteit: {{ tank.capacity }}</small></div>
+      <div class="tank-value"><strong>{{ tank.stock }}</strong><span>{{ tank.percent }}%</span></div>
+    </div>
+    {% endfor %}
+    <a class="view-link" href="{{ url_for('materials') }}">Alle tanks bekijken →</a>
+  </div>
+
+  <div class="panel packaging-panel">
+    <div class="panel-title">VERPAKKINGSVOORRAAD</div>
+    {% for row in metrics.dashboard_packaging %}
+    <div class="stock-row">
+      <div class="product-thumb pack">{{ row.icon }}</div>
+      <div class="stock-info"><strong>{{ row.name }}</strong><span>{{ row.stock }}</span></div>
+      <span class="status {{ row.status_class }}">{{ row.status }}</span>
+    </div>
+    {% endfor %}
+    <a class="view-link" href="{{ url_for('articles') }}">Alle verpakkingen bekijken →</a>
+  </div>
+</section>
+
+<section class="bottom-grid">
+  <div class="panel">
+    <div class="panel-title flex-title"><span>MELDINGEN</span><a href="#">Bekijk alles →</a></div>
+    <div class="notice danger"><b>!</b> Triggers lichtblauw bijna op (80 stuks)</div>
+    <div class="notice warning"><b>!</b> Etiketten Universol 1L bestellen (600 stuks)</div>
+    <div class="notice info"><b>i</b> Nieuwe factuur Superdoos ontvangen</div>
+    <div class="notice info"><b>i</b> Nieuwe voorraad Excel Michael beschikbaar</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title flex-title"><span>RECENTE ACTIVITEIT</span><a href="#">Bekijk alles →</a></div>
+    <div class="activity"><span>09:14</span> Pakbon 2026-0451 gemaakt voor Copagro</div>
+    <div class="activity"><span>09:02</span> Afvulling: 400 stuks Universol 5L</div>
+    <div class="activity"><span>08:47</span> Inkoopfactuur Superdoos verwerkt</div>
+    <div class="activity"><span>08:30</span> Nieuwe batch Universol geproduceerd (4.500 L)</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">SNELLE ACTIES</div>
+    <div class="quick-grid">
+      <a href="#">▤<span>Nieuwe<br>pakbon</span></a>
+      <a href="#">🛒<span>Nieuwe<br>order</span></a>
+      <a href="#">▱<span>Afvulling<br>registreren</span></a>
+      <a href="{{ url_for('invoice') }}">▤<span>Inkoopfactuur<br>importeren</span></a>
+      <a href="#">▧<span>Excel<br>importeren</span></a>
+      <a href="#">☷<span>Nieuwe<br>klant</span></a>
     </div>
   </div>
-  {% endfor %}
-</div>
-
-<div class="grid two">
-  <section class="card">
-    <h2>Waarschuwingen</h2>
-    {% if metrics.warnings %}
-      <ul class="warning-list">
-      {% for warning in metrics.warnings %}<li class="{{ warning.level }}">{{ warning.text }}</li>{% endfor %}
-      </ul>
-    {% else %}<p>Geen waarschuwingen.</p>{% endif %}
-  </section>
-  <section class="card">
-    <h2>Productmarges</h2>
-    <table>
-      <tr><th>Product</th><th>Kostprijs</th><th>Verkoop</th><th>Marge</th></tr>
-      {% for row in metrics.products[:6] %}
-      <tr><td>{{ row.name }}</td><td>{{ row.total_cost|money }}</td><td>{{ row.sell_price|money }}</td><td>{{ "%.1f"|format(row.margin) }}%</td></tr>
-      {% endfor %}
-    </table>
-  </section>
-</div>
+</section>
 {% endblock %}

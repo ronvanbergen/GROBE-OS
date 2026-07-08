@@ -47,7 +47,7 @@ def calculate_recipe_cost(db: Dict[str, Any], recipe: Dict[str, Any]) -> Dict[st
         if possible_batches is None or batches < possible_batches:
             possible_batches = batches
             limiting = line.get("name")
-        lines.append({**line, "unit_price": unit_price, "line_total": line_total, "stock": stock, "possible_batches": batches})
+        lines.append({**line, "unit_price": unit_price, "line_total": line_total, "line_cost": line_total, "stock": stock, "possible_batches": batches})
 
     batch_liters = float(recipe.get("batch_liters") or 1)
     return {
@@ -55,6 +55,7 @@ def calculate_recipe_cost(db: Dict[str, Any], recipe: Dict[str, Any]) -> Dict[st
         "recipe_name": recipe.get("name"),
         "batch_liters": batch_liters,
         "total_cost": total,
+        "batch_cost": total,
         "cost_per_liter": total / batch_liters if batch_liters else 0,
         "possible_batches": possible_batches or 0,
         "possible_liters": (possible_batches or 0) * batch_liters,
@@ -98,13 +99,26 @@ def calculate_product_cost(db: Dict[str, Any], product: Dict[str, Any]) -> Dict[
         "name": product.get("name"),
         "sell_price": sell_price,
         "grondstof": grondstof,
+        "material_cost": grondstof,
         "packaging": packaging_total,
+        "packaging_cost": packaging_total,
         "fill_cost": fill_cost,
         "total_cost": total_cost,
         "profit": profit,
         "margin": margin,
         "packaging_lines": packaging_lines,
+        "liters_per_unit": liters,
     }
+
+
+def _status_label(stock: float, minimum: float) -> tuple[str, str]:
+    if minimum and stock <= minimum:
+        return "Bijna op", "bad"
+    if minimum and stock <= minimum * 1.8:
+        return "Bestellen", "warn"
+    if minimum and stock >= minimum * 4:
+        return "Ruim voldoende", "good"
+    return "Voldoende", "ok"
 
 
 def dashboard_metrics(db: Dict[str, Any]) -> Dict[str, Any]:
@@ -121,6 +135,67 @@ def dashboard_metrics(db: Dict[str, Any]) -> Dict[str, Any]:
     for rc in recipe_costs:
         if rc["limiting_material"]:
             warnings.append({"level": "info", "text": f"{rc['recipe_name']}: {rc['possible_liters']:,.0f} liter mogelijk. Beperkend: {rc['limiting_material']}".replace(",", ".")})
+
+    dashboard_products = []
+    icons = {"Universol": "▣", "ProGold": "▣", "Behangbikker": "▣", "Microsan": "▯", "Uniforte": "▣"}
+    css = {"Universol": "", "ProGold": "orange", "Behangbikker": "orange", "Microsan": "green", "Uniforte": "gray"}
+    for product in products[:8]:
+        stock_units = float(product.get("stock_units") or 0)
+        minimum = max(100, float(product.get("units_per_box") or 1) * 40)
+        status, status_class = _status_label(stock_units, minimum)
+        unit = "stuks" if stock_units >= 1000 or product.get("liters_per_unit", 0) <= 1 else "L"
+        stock_label = f"{stock_units:,.0f} {unit}".replace(",", ".")
+        if product.get("brand") in ["Behangbikker", "Microsan", "Uniforte"]:
+            stock_label = f"{stock_units * float(product.get('liters_per_unit') or 0):,.0f} L".replace(",", ".")
+        dashboard_products.append({
+            "name": product.get("name", ""),
+            "stock": stock_label,
+            "status": status,
+            "status_class": status_class,
+            "icon": icons.get(product.get("brand"), "▣"),
+            "css": css.get(product.get("brand"), ""),
+        })
+
+    tanks_source = [
+        {"name": "Universol", "stock": 6300, "capacity": 10000},
+        {"name": "Behangbikker", "stock": 2020, "capacity": 5000},
+        {"name": "Microsan", "stock": 1500, "capacity": 5000},
+        {"name": "Uniforte 1:10", "stock": 603, "capacity": 3000},
+        {"name": "Uniforte concentraat", "stock": 200, "capacity": 2000},
+    ]
+    dashboard_tanks = []
+    for tank in tanks_source:
+        pct = int(max(0, min(100, tank["stock"] / tank["capacity"] * 100))) if tank["capacity"] else 0
+        dashboard_tanks.append({
+            "name": tank["name"],
+            "stock": f"{tank['stock']:,.0f} L".replace(",", "."),
+            "capacity": f"{tank['capacity']:,.0f} L".replace(",", "."),
+            "percent": pct,
+        })
+
+    packaging_lookup = {a.get("legacy_number"): a for a in articles}
+    pack_codes = [
+        ("CAN5L-BLAUW", "Jerrycan 5L", "▯"),
+        ("FLES1L-WIT", "Fles 1L", "▯"),
+        ("FLES600-WIT", "Fles 600 ml", "▯"),
+        ("TRIGGER-LB", "Triggers lichtblauw", "⌁"),
+        ("DOOS-UNI-4X5", "Dozen 4 x 5L", "□"),
+        ("ETI-UNI-600", "Etiketten 600 ml", "▤"),
+    ]
+    dashboard_packaging = []
+    for code, label, icon in pack_codes:
+        article = packaging_lookup.get(code, {})
+        stock = float(article.get("stock") or 0)
+        minimum = float(article.get("min_stock") or 0)
+        status, status_class = _status_label(stock, minimum)
+        dashboard_packaging.append({
+            "name": label,
+            "stock": f"{stock:,.0f} stuks".replace(",", "."),
+            "status": status,
+            "status_class": status_class,
+            "icon": icon,
+        })
+
     return {
         "raw_materials": [a for a in articles if a.get("type") == "grondstof"],
         "packaging": [a for a in articles if a.get("type") in ["verpakking", "etiket", "doos"]],
@@ -128,4 +203,7 @@ def dashboard_metrics(db: Dict[str, Any]) -> Dict[str, Any]:
         "products": product_costs,
         "warnings": warnings[:12],
         "open_mutations": [m for m in db.get("stock_mutations", []) if m.get("status") != "approved"],
+        "dashboard_products": dashboard_products,
+        "dashboard_tanks": dashboard_tanks,
+        "dashboard_packaging": dashboard_packaging,
     }

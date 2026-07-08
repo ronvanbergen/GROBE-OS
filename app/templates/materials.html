@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>IBC grondstoffen</h1>
+    <p>Visuele voorraad per grondstof. Dit is het scherm dat op het oude dashboard ontbrak.</p>
+  </div>
+  <div class="hero-card"><span>Aantal grondstoffen</span><strong>{{ raw_materials|length }}</strong></div>
+</section>
+
+<div class="tank-grid">
+  {% for article in raw_materials %}
+  {% set pct = (article.stock / article.max_stock * 100) if article.max_stock else 0 %}
+  {% set pct = 100 if pct > 100 else pct %}
+  {% set status = 'bad' if article.stock <= article.min_stock else ('warn' if article.stock <= article.min_stock * 1.5 else 'good') %}
+  <div class="tank-card">
+    <div class="tank"><div class="tank-fill" style="height: {{ pct }}%"></div></div>
+    <div class="tank-info">
+      <strong>{{ article.name }}</strong>
+      <span>{{ article.stock }} {{ article.unit }}</span>
+      <small>Max: {{ article.max_stock }} {{ article.unit }}</small>
+      <small>Minimum: {{ article.min_stock }} {{ article.unit }}</small>
+      <small>Leverancier: {{ article.supplier }}</small>
+      <small>Levertijd: {{ article.lead_time_days }} dagen</small>
+      <br><span class="badge {{ status }}">{{ "Bijna op" if status == "bad" else ("Let op" if status == "warn" else "Voldoende") }}</span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

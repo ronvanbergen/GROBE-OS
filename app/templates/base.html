@@ -3,32 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GROBÉ OS</title>
+  <title>GROBÉ OS v5</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <aside class="sidebar">
-    <div class="brand">GROBÉ OS</div>
-    <nav>
-      <a href="{{ url_for('dashboard') }}">Dashboard</a>
-      <a href="{{ url_for('products') }}">Producten</a>
-      <a href="{{ url_for('articles') }}">Voorraad</a>
-      <a href="{{ url_for('recipes') }}">Recepturen</a>
-      <a href="{{ url_for('costs') }}">Kostprijzen</a>
-      <a href="{{ url_for('invoice') }}">Factuur upload</a>
-      <a href="{{ url_for('mutations') }}">Mutaties</a>
-      <a href="{{ url_for('prices') }}">Prijshistorie</a>
+    <div class="side-brand">
+      <div class="brand-main">GROBÉ OS</div>
+      <div class="brand-sub">OPERATING SYSTEM</div>
+    </div>
+    <nav class="side-nav">
+      <a href="{{ url_for('dashboard') }}" class="active"><span>⌂</span>Dashboard</a>
+      <a href="{{ url_for('products') }}"><span>▯</span>Gereed product</a>
+      <a href="{{ url_for('materials') }}"><span>⌬</span>Tanken</a>
+      <a href="{{ url_for('articles') }}"><span>□</span>Verpakkingen</a>
+      <a href="#"><span>▱</span>Orders</a>
+      <a href="#"><span>☰</span>Pakbonnen</a>
+      <a href="{{ url_for('invoice') }}"><span>▤</span>Facturen</a>
+      <a href="#"><span>♙</span>Klanten</a>
+      <a href="#"><span>▣</span>Leveranciers</a>
+      <a href="{{ url_for('prices') }}"><span>↓</span>Inkoop</a>
+      <a href="{{ url_for('costs') }}"><span>▥</span>Rapportages</a>
+      <a href="{{ url_for('recipes') }}"><span>⚙</span>Recepturen</a>
     </nav>
+    <div class="system-status">▱ Systeemstatus</div>
+    <div class="version">v5.0</div>
   </aside>
-  <main class="content">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="flashes">
-          {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
+
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="hamburger">☰</div>
+      <div class="greeting">
+        <strong>Goedemorgen Ron</strong>
+        <span>GROBÉ OS dashboard</span>
+      </div>
+      <form class="searchbar"><input placeholder="Zoek product, klant, leverancier, pakbon, factuur..." disabled><span>⌕</span></form>
+      <a class="ai-button" href="#">⚙ AI Assist</a>
+      <div class="bell">🔔<b>3</b></div>
+      <div class="user-pill">RM</div>
+      <div class="user-name">Ron⌄</div>
+    </header>
+
+    <section class="page">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flashes">
+            {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </section>
   </main>
 </body>
 </html>

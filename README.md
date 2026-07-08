@@ -1,48 +1,22 @@
-# GROBÉ OS v3
+# GROBÉ OS v5
 
-Dit is een concrete basisversie van GROBÉ OS. De app draait als Flask-webapp en is geschikt voor Render.
+Deze versie zet het dashboard visueel in de richting van het gewenste GROBÉ OS ontwerp:
 
-## In deze versie
+- blauwe vaste zijbalk
+- topbar met zoekveld, AI Assist en gebruiker
+- KPI-tegels bovenaan
+- gereed product voorraad
+- tanken met vullingsbalken
+- verpakkingsvoorraad
+- meldingen
+- recente activiteit
+- snelle acties
 
-- Dashboard als controlekamer.
-- Grafische IBC-weergave voor grondstoffen.
-- Centrale JSON-database voor artikelen, producten, recepturen, leveranciers en mutaties.
-- Voorraad van grondstoffen, verpakkingen, etiketten en dozen.
-- Huidige Universol-receptuur met ECOSURF.
-- Nieuwe Universol-receptuur na ECOSURF:
-  - Water 867
-  - BDG 36
-  - Ampholak 29
-  - KOH 10
-  - Dissolvine 20
-  - NL8P4 9
-  - GA8W 9
-  - NCS 20
-- Kostprijs per receptuur, per liter en per product.
-- Productmarge per verpakking.
-- Factuur-upload blijft aanwezig: PDF uitlezen, legacy-artikelnummers herkennen, prijshistorie opslaan, voorraadmutatie klaarzetten voor goedkeuring.
-- Voorraad wordt pas verhoogd na handmatige goedkeuring.
+De bestaande routes voor voorraad, IBC grondstoffen, recepturen, kostprijzen, producten, factuur-upload en mutaties blijven aanwezig.
 
-## Niet in deze versie
-
-- Nog geen echte Dropbox-koppeling.
-- Nog geen automatische koppeling met de bestaande Pakbon-app.
-- Nog geen volledige gebruikers/login-module.
-- PDF-uitlezing is basisherkenning. Voor Julius Hoesch, Superdoos en Distrifill moeten we daarna per factuurlay-out verder verfijnen.
-
-## Lokaal draaien
+Start lokaal:
 
 ```bash
 pip install -r requirements.txt
-python -m app.main
+flask --app app.main run
 ```
-
-Daarna openen:
-
-```text
-http://127.0.0.1:5000
-```
-
-## Render
-
-Deze ZIP bevat `render.yaml`. Upload de inhoud naar GitHub. Render kan daarna automatisch deployen.

@@ -1,20 +1,47 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Kostprijzen</h1>
-<div class="grid two">
-<section class="card">
-<h2>Receptuurkosten</h2>
-<table>
-<tr><th>Receptuur</th><th>Batch</th><th>Kostprijs liter</th><th>Beperkend</th></tr>
-{% for r in recipe_costs %}<tr><td>{{ r.recipe_name }}</td><td>{{ r.batch_liters }} L</td><td>{{ r.cost_per_liter|money }}</td><td>{{ r.limiting_material }}</td></tr>{% endfor %}
-</table>
+<section class="hero">
+  <div>
+    <h1>Kostprijzen en marges</h1>
+    <p>Actuele berekening op basis van grondstoffen, verpakking en afvulkosten. Transport zit hier bewust niet in.</p>
+  </div>
+  <div class="hero-card"><span>Producten</span><strong>{{ product_costs|length }}</strong></div>
 </section>
+
 <section class="card">
-<h2>Productkosten</h2>
-<table>
-<tr><th>Product</th><th>Kostprijs</th><th>Verkoop</th><th>Winst</th><th>Marge</th></tr>
-{% for p in product_costs %}<tr><td>{{ p.name }}</td><td>{{ p.total_cost|money }}</td><td>{{ p.sell_price|money }}</td><td>{{ p.profit|money }}</td><td>{{ "%.1f"|format(p.margin) }}%</td></tr>{% endfor %}
-</table>
+  <h2>Receptuurkosten</h2>
+  <table>
+    <tr><th>Receptuur</th><th>Batch</th><th>Batchkosten</th><th>Kostprijs per liter</th><th>Beperkende grondstof</th><th>Productiecapaciteit</th></tr>
+    {% for r in recipe_costs %}
+    <tr>
+      <td>{{ r.recipe_name }}</td>
+      <td>{{ r.batch_liters }} L</td>
+      <td>{{ r.batch_cost|money }}</td>
+      <td>{{ r.cost_per_liter|money }}</td>
+      <td>{{ r.limiting_material }}</td>
+      <td>{{ "{:,.0f}".format(r.possible_liters).replace(',', '.') }} L</td>
+    </tr>
+    {% endfor %}
+  </table>
 </section>
-</div>
+<br>
+<section class="card">
+  <h2>Productkostprijzen en marges</h2>
+  <table>
+    <tr><th>SKU</th><th>Product</th><th>Liter</th><th>Grondstof</th><th>Verpakking</th><th>Afvullen</th><th>Kostprijs totaal</th><th>Verkoopprijs</th><th>Marge</th></tr>
+    {% for p in product_costs %}
+    <tr>
+      <td>{{ p.sku }}</td>
+      <td>{{ p.name }}</td>
+      <td>{{ p.liters_per_unit }}</td>
+      <td>{{ p.material_cost|money }}</td>
+      <td>{{ p.packaging_cost|money }}</td>
+      <td>{{ p.fill_cost|money }}</td>
+      <td><strong>{{ p.total_cost|money }}</strong></td>
+      <td>{{ p.sell_price|money }}</td>
+      <td><strong>{{ "%.1f"|format(p.margin) }}%</strong></td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
 {% endblock %}

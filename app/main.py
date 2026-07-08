@@ -44,6 +44,13 @@ def articles():
     return render_template("articles.html", articles=db.get("articles", []))
 
 
+@app.route("/materials")
+def materials():
+    db = load_db()
+    raw = [a for a in db.get("articles", []) if a.get("type") == "grondstof"]
+    return render_template("materials.html", raw_materials=raw)
+
+
 @app.route("/products")
 def products():
     db = load_db()

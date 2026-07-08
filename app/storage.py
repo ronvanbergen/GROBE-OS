@@ -68,7 +68,7 @@ RECIPES = [
 ]
 
 DEFAULT_DB: Dict[str, Any] = {
-    "settings": {"company_name": "GROBÉ Nederland", "currency": "EUR", "dashboard_note": "GROBÉ OS v3 basis"},
+    "settings": {"company_name": "GROBÉ Nederland", "currency": "EUR", "dashboard_note": "GROBÉ OS v5 dashboard ontwerp", "app_version": "v5"},
     "articles": RAW_MATERIALS + PACKAGING,
     "products": PRODUCTS,
     "recipes": RECIPES,
@@ -120,6 +120,23 @@ def load_db() -> Dict[str, Any]:
     ensure_db()
     with DB_PATH.open("r", encoding="utf-8") as f:
         db = json.load(f)
+
+    # Migratie voor vroege testversies. In v1/v2/v3 stonden sommige startvoorraden
+    # nog leeg of waren de nieuwe schermen niet zichtbaar. Omdat deze app nog in
+    # testfase zit, zetten we de basisdata éénmalig gelijk aan v4 zodra een oude
+    # database wordt aangetroffen. Gebruikersdata zoals mutaties en factuurhistorie
+    # blijft behouden.
+    if db.get("settings", {}).get("app_version") != "v5":
+        db["settings"] = DEFAULT_DB["settings"]
+        db["articles"] = DEFAULT_DB["articles"]
+        db["products"] = DEFAULT_DB["products"]
+        db["recipes"] = DEFAULT_DB["recipes"]
+        db.setdefault("price_history", [])
+        db.setdefault("stock_mutations", [])
+        db.setdefault("invoice_imports", [])
+        save_db(db)
+        return db
+
     if _merge_defaults(db):
         save_db(db)
     return db
