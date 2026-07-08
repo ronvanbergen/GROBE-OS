@@ -1,31 +1,37 @@
-# GROBÉ OS
+# GROBÉ OS - Render basis v1.0
 
-Startversie voor Render.
+Deze versie is bewust gebouwd zonder FastAPI/Pydantic, omdat Render op Python 3.14 vastliep bij pydantic-core.
 
 ## Render instellingen
 
-Language: Python 3
-Build Command: `pip install -r requirements.txt`
-Start Command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+Build Command:
 
-## Wat werkt in deze startversie
+```text
+pip install -r requirements.txt
+```
 
-- Dashboard
-- Voorraaditems
-- Voorraadmutaties
-- Zoekfunctie
-- Importcentrum voor Excel-bestanden
-- Eenvoudige herkenning van bekende grondstoffen/verpakkingen
+Start Command:
+
+```text
+gunicorn main:app --bind 0.0.0.0:$PORT
+```
+
+## Wat werkt
+
+- Homepage/dashboard
+- SQLite database wordt automatisch aangemaakt
+- Voorraaditems met statuskleur
+- Importpagina ontvangt bestanden en logt uploads
+- Mutatiepagina
+- `/health` endpoint
+
+## Wat nog niet werkt
+
+- Daniel/Michael inhoudelijk uitlezen
+- Factuur-engine
 - Prijshistorie
-- Health check: `/api/health`
-
-## Nog niet klaar
-
 - Login
-- Permanente productie-database
-- PDF-factuurherkenning
-- Echte Daniel/Michael layout-specifieke parser
-- Dropbox-koppeling
-- Pakbon-PDF's
+- Dropbox
+- PDF-generatie
 
-Let op: op Render Free kan de lokale SQLite database bij herstart/deploy opnieuw beginnen. Voor echte productie moet dit later naar PostgreSQL.
+Deze versie is bedoeld als eerste stabiele live basis op Render.

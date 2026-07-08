@@ -1,6 +1,2 @@
-fastapi==0.116.1
-uvicorn[standard]==0.35.0
-sqlalchemy==2.0.41
-pydantic==2.11.7
-python-multipart==0.0.20
-openpyxl==3.1.5
+Flask==3.0.3
+gunicorn==22.0.0
