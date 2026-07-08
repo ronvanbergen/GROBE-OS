@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Voorraad</h1>
+<section class="card">
+  <h2>Artikel toevoegen of wijzigen</h2>
+  <form method="post" class="form-grid">
+    <input name="legacy_number" placeholder="Legacy/artikelnummer" required>
+    <input name="name" placeholder="Naam" required>
+    <select name="type"><option>grondstof</option><option>verpakking</option><option>etiket</option><option>doos</option></select>
+    <input name="unit" placeholder="Eenheid" value="kg">
+    <input name="stock" type="number" step="0.01" placeholder="Voorraad">
+    <input name="min_stock" type="number" step="0.01" placeholder="Minimum">
+    <input name="max_stock" type="number" step="0.01" placeholder="Maximum">
+    <input name="lead_time_days" type="number" placeholder="Levertijd dagen">
+    <input name="supplier" placeholder="Leverancier">
+    <input name="manual_price" type="number" step="0.0001" placeholder="Prijs per eenheid">
+    <button>Opslaan</button>
+  </form>
+</section>
+<section class="card">
+<table>
+  <tr><th>Nummer</th><th>Naam</th><th>Type</th><th>Voorraad</th><th>Min.</th><th>Levertijd</th><th>Leverancier</th><th>Prijs</th></tr>
+  {% for a in articles %}
+  <tr><td>{{ a.legacy_number }}</td><td>{{ a.name }}</td><td>{{ a.type }}</td><td>{{ a.stock }} {{ a.unit }}</td><td>{{ a.min_stock }}</td><td>{{ a.lead_time_days }} dagen</td><td>{{ a.supplier }}</td><td>{{ (a.last_price or a.manual_price)|money }}</td></tr>
+  {% endfor %}
+</table>
+</section>
+{% endblock %}

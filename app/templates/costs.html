@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Kostprijzen</h1>
+<div class="grid two">
+<section class="card">
+<h2>Receptuurkosten</h2>
+<table>
+<tr><th>Receptuur</th><th>Batch</th><th>Kostprijs liter</th><th>Beperkend</th></tr>
+{% for r in recipe_costs %}<tr><td>{{ r.recipe_name }}</td><td>{{ r.batch_liters }} L</td><td>{{ r.cost_per_liter|money }}</td><td>{{ r.limiting_material }}</td></tr>{% endfor %}
+</table>
+</section>
+<section class="card">
+<h2>Productkosten</h2>
+<table>
+<tr><th>Product</th><th>Kostprijs</th><th>Verkoop</th><th>Winst</th><th>Marge</th></tr>
+{% for p in product_costs %}<tr><td>{{ p.name }}</td><td>{{ p.total_cost|money }}</td><td>{{ p.sell_price|money }}</td><td>{{ p.profit|money }}</td><td>{{ "%.1f"|format(p.margin) }}%</td></tr>{% endfor %}
+</table>
+</section>
+</div>
+{% endblock %}

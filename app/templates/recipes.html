@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Recepturen</h1>
+{% for row in rows %}
+<section class="card">
+  <h2>{{ row.recipe.name }}</h2>
+  <p>{{ row.recipe.notes }}</p>
+  <div class="grid four">
+    <div class="metric"><span>Batch</span><strong>{{ row.recipe.batch_liters }} L</strong></div>
+    <div class="metric"><span>Kostprijs batch</span><strong>{{ row.cost.total_cost|money }}</strong></div>
+    <div class="metric"><span>Kostprijs liter</span><strong>{{ row.cost.cost_per_liter|money }}</strong></div>
+    <div class="metric"><span>Mogelijk</span><strong>{{ "{:,.0f}".format(row.cost.possible_liters).replace(',', '.') }} L</strong></div>
+  </div>
+  <table>
+    <tr><th>Grondstof</th><th>Hoeveelheid</th><th>Prijs</th><th>Kosten</th><th>Voorraad</th><th>Batches mogelijk</th></tr>
+    {% for line in row.cost.lines %}
+    <tr><td>{{ line.name }}</td><td>{{ line.quantity }} {{ line.unit }}</td><td>{{ line.unit_price|money }}</td><td>{{ line.line_total|money }}</td><td>{{ line.stock }}</td><td>{{ line.possible_batches }}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endfor %}
+{% endblock %}

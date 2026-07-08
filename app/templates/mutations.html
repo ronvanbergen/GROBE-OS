@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Voorraad goedkeuren</h1>
+<table>
+<thead><tr><th>Status</th><th>Datum</th><th>Leverancier</th><th>Artikel</th><th>Hoeveelheid</th><th>Prijs</th><th>Bronregel</th><th>Actie</th></tr></thead>
+<tbody>
+{% for m in mutations %}
+<tr>
+  <td><span class="status {{ m.status }}">{{ m.status }}</span></td>
+  <td>{{ m.created_at }}</td>
+  <td>{{ m.supplier }}</td>
+  <td>{{ m.article_name }}<br><span class="muted">{{ m.legacy_number }}</span></td>
+  <td>{{ m.quantity }}</td>
+  <td>€ {{ '%.2f'|format(m.unit_price|float) }}</td>
+  <td class="raw">{{ m.raw_line }}</td>
+  <td>{% if m.status != 'approved' %}<form method="post" action="{{ url_for('approve_mutation', index=loop.index0) }}"><button>Goedkeuren</button></form>{% endif %}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

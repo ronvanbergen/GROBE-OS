@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Controlekamer GROBÉ Nederland</h1>
+    <p>Voorraad, recepturen, kostprijzen en open mutaties in één overzicht.</p>
+  </div>
+  <div class="hero-card">
+    <span>Open mutaties</span>
+    <strong>{{ metrics.open_mutations|length }}</strong>
+  </div>
+</section>
+
+<div class="grid four">
+  {% for recipe in metrics.recipes %}
+  <div class="card metric">
+    <span>{{ recipe.recipe_name }}</span>
+    <strong>{{ "{:,.0f}".format(recipe.possible_liters).replace(',', '.') }} L</strong>
+    <small>mogelijk, beperkend: {{ recipe.limiting_material }}</small>
+  </div>
+  {% endfor %}
+  <div class="card metric">
+    <span>Producten</span><strong>{{ metrics.products|length }}</strong><small>met kostprijsberekening</small>
+  </div>
+  <div class="card metric">
+    <span>Waarschuwingen</span><strong>{{ metrics.warnings|length }}</strong><small>voorraad en capaciteit</small>
+  </div>
+</div>
+
+<h2>Grondstoffen IBC-overzicht</h2>
+<div class="tank-grid">
+  {% for article in metrics.raw_materials %}
+  {% set pct = (article.stock / article.max_stock * 100) if article.max_stock else 0 %}
+  {% set pct = 100 if pct > 100 else pct %}
+  <div class="tank-card">
+    <div class="tank"><div class="tank-fill" style="height: {{ pct }}%"></div></div>
+    <div class="tank-info">
+      <strong>{{ article.name }}</strong>
+      <span>{{ article.stock }} {{ article.unit }}</span>
+      <small>min. {{ article.min_stock }} | levertijd {{ article.lead_time_days }} dagen</small>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="grid two">
+  <section class="card">
+    <h2>Waarschuwingen</h2>
+    {% if metrics.warnings %}
+      <ul class="warning-list">
+      {% for warning in metrics.warnings %}<li class="{{ warning.level }}">{{ warning.text }}</li>{% endfor %}
+      </ul>
+    {% else %}<p>Geen waarschuwingen.</p>{% endif %}
+  </section>
+  <section class="card">
+    <h2>Productmarges</h2>
+    <table>
+      <tr><th>Product</th><th>Kostprijs</th><th>Verkoop</th><th>Marge</th></tr>
+      {% for row in metrics.products[:6] %}
+      <tr><td>{{ row.name }}</td><td>{{ row.total_cost|money }}</td><td>{{ row.sell_price|money }}</td><td>{{ "%.1f"|format(row.margin) }}%</td></tr>
+      {% endfor %}
+    </table>
+  </section>
+</div>
+{% endblock %}

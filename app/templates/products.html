@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Producten</h1>
+<p>Actuele kostprijs per verpakking. Transport zit hier bewust niet in.</p>
+<div class="card">
+<table>
+  <tr><th>SKU</th><th>Product</th><th>Voorraad</th><th>Grondstof</th><th>Verpakking</th><th>Afvullen</th><th>Kostprijs</th><th>Verkoop</th><th>Marge</th></tr>
+  {% for row in rows %}
+  <tr>
+    <td>{{ row.product.sku }}</td>
+    <td>{{ row.product.name }}</td>
+    <td>{{ row.product.stock_units }} st</td>
+    <td>{{ row.cost.grondstof|money }}</td>
+    <td>{{ row.cost.packaging|money }}</td>
+    <td>{{ row.cost.fill_cost|money }}</td>
+    <td><strong>{{ row.cost.total_cost|money }}</strong></td>
+    <td>{{ row.cost.sell_price|money }}</td>
+    <td>{{ "%.1f"|format(row.cost.margin) }}%</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

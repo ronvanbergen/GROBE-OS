@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Factuur upload</h1>
+<div class="panel">
+  <p>Upload hier een PDF-factuur van bijvoorbeeld Julius Hoesch. De app leest de tekst uit, zoekt naar bekende legacy-nummers en zet de voorraadmutaties klaar voor goedkeuring.</p>
+  <form method="post" enctype="multipart/form-data">
+    <input type="file" name="invoice_pdf" accept="application/pdf" required>
+    <button type="submit">Factuur verwerken</button>
+  </form>
+</div>
+<h2>Laatste imports</h2>
+<table>
+<thead><tr><th>Datum</th><th>Bestand</th><th>Leverancier</th><th>Herkende regels</th></tr></thead>
+<tbody>
+{% for i in imports|reverse %}
+<tr><td>{{ i.created_at }}</td><td>{{ i.filename }}</td><td>{{ i.supplier }}</td><td>{{ i.matched_lines }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

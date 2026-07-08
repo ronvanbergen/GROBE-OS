@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Prijshistorie</h1>
+<table>
+<thead><tr><th>Datum</th><th>Leverancier</th><th>Legacy</th><th>Artikel</th><th>Prijs</th><th>Factuur</th><th>Bronregel</th></tr></thead>
+<tbody>
+{% for p in history %}
+<tr><td>{{ p.created_at }}</td><td>{{ p.supplier }}</td><td>{{ p.legacy_number }}</td><td>{{ p.article_name }}</td><td>€ {{ '%.2f'|format(p.unit_price|float) }}</td><td>{{ p.source_file }}</td><td class="raw">{{ p.raw_line }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}
