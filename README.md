@@ -1,22 +1,27 @@
-# GROBÉ OS v5
+# GROBÉ OS - React milestone 1
 
-Deze versie zet het dashboard visueel in de richting van het gewenste GROBÉ OS ontwerp:
+Nieuwe basis voor GROBÉ OS als webapplicatie.
 
-- blauwe vaste zijbalk
-- topbar met zoekveld, AI Assist en gebruiker
-- KPI-tegels bovenaan
-- gereed product voorraad
-- tanken met vullingsbalken
-- verpakkingsvoorraad
-- meldingen
-- recente activiteit
-- snelle acties
+## Stack
+- Frontend: React + Vite
+- Backend: FastAPI
+- Hosting: Render compatible
 
-De bestaande routes voor voorraad, IBC grondstoffen, recepturen, kostprijzen, producten, factuur-upload en mutaties blijven aanwezig.
+## Lokaal draaien
 
-Start lokaal:
-
+Backend:
 ```bash
+cd backend
 pip install -r requirements.txt
-flask --app app.main run
+uvicorn app.main:app --reload --port 8000
 ```
+
+Frontend:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## Render
+Deze versie bevat `render.yaml` voor een webservice die de React build serveert via FastAPI.
